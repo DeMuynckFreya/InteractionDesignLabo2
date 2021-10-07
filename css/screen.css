@@ -39,6 +39,11 @@
     --global-color-neutral-xxx-dark: #35374d;
     --global-color-neutral-xxxx-dark: #20223a;
 
+    /* global page settings */
+    --global-page-color: var(--global-color-neutral-xxxx-dark);
+    --global-page-backgroundColor: var(--global-color-neutral-xxxx-light);
+    --global-selection-backgroundColor: var(--global-color-alpha);
+
     /* border stuff */
     --global-borderRadius: 3px;
     --global-borderWidth: 1px;
@@ -66,6 +71,23 @@
     --global-input-boxShadow: 0 0 0 3px var(--global-color-alpha-x-transparent);
 }
 
+@media (prefers-color-scheme: dark) {
+    :root {
+        --global-page-color: White;
+        --global-page-backgroundColor: var(--global-color-neutral-xxxx-dark);
+
+        --global-label-color: var(--global-color-neutral-xx-light);
+        --global-placeholder-color: var(--global-color-neutral-dark);
+        --global-input-backgroundColor: var(--global-color-neutral-xxxx-dark);
+        --global-input-color: var(--global-color-neutral-xxxx-light);
+        --global-input-borderColor: var(--global-input-backgroundColor);
+        --global-input-hover-borderColor: var(--global-color-alpha-transparent);
+        --global-input-focus-borderColor: var(--global-color-alpha-transparent);
+        --global-input-focus-boxShadowColor: var(--global-color-alpha-transparent);
+        --global-input-error-boxShadowColor: var(--global-color-error-transparent); 
+    }
+}
+
 /*------------------------------------*\
 #GENERIC
 \*------------------------------------*/
@@ -80,12 +102,13 @@ html {
     font-size: 16px;
     line-height: 1.5;
     font-family: "Inter Web", Helvetica, arial, sans-serif;
-    color: var(--global-color-neutral-xxxx-dark);
-    background-color: var(--global-color-neutral-xxxx-light);
+    color: var(--global-page-color);
+    background-color: var(--global-page-backgroundColor);
     box-sizing: border-box;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;    
 }
+
 
 *,
 *:before,
@@ -519,15 +542,23 @@ input::placeholder {
 }
 
 .c-logo__path--1 {
-    fill: var(--global-color-neutral-xxxx-dark);
+    fill: var(--logo__path--1--fill, var(--global-color-neutral-xxxx-dark));
 }
 
 .c-logo__path--2 {
-    fill: var(--global-color-alpha);
+    fill: var(--logo__path--2--fill, var(--global-color-alpha));
 }
 
 .c-logo__path--3 {
-    fill: var(--color-alpha-x-dark);
+    fill: var(--logo__path--3--fill, var(--global-color-alpha-x-dark));
+}
+
+@media (prefers-color-scheme: dark) {
+    .c-logo {
+        --logo__path--1--fill: White;
+        --logo__path--2--fill: var(--logo__path--1--fill);
+        --logo__path--3--fill: var(--logo__path--1--fill);
+    }
 }
 
 /*
@@ -537,10 +568,11 @@ input::placeholder {
 */
 
 .c-card {
-    background-color: White;
+    --card-borderRadius: var(--global-borderRadius);
+    background-color: var(--card-backgroundColor, White);
     margin-bottom: var(--global-whitespace);
-    border-radius: var(--global-borderRadius);
-    box-shadow: 0 0 0 var(--global-borderWidth) rgba(0,0,0, 0.05), 0 2px 4px rgba(0,0,0,.075);
+    border-radius: var(--card-borderRadius, var(--global-borderRadius));
+    box-shadow: 0 0 0 1px rgba(0,0,0, 0.05), 0 2px 4px rgba(0,0,0,.075);
     overflow: hidden;
 }
 
@@ -552,7 +584,7 @@ input::placeholder {
 
 .c-card__footer {
     text-align: center;
-    border-top: var(--global-borderWidth) solid var(--global-color-neutral-xxx-light);
+    border-top: var(--global-borderWidth) solid var(--card__footer-borderColor, var(--global-color-neutral-xxx-light));
 }
 
 .c-card__title {
@@ -581,6 +613,13 @@ input::placeholder {
     }
 }
 
+@media (prefers-color-scheme: dark) {
+    .c-card {
+        --card-backgroundColor: var(--global-color-neutral-xxx-dark);
+        --card__footer-borderColor: var(--global-color-neutral-xxxx-dark);
+    }
+}
+
 /*
     Component: Forms
     ---
@@ -602,30 +641,31 @@ input::placeholder {
 */
 
 .c-input {
+    --input-transition: all var(--global-transitionDuration-alpha) var(--global-transitionEasing-out);
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
     width: 100%;
-    border: var(--global-borderWidth) solid var(--global-input-borderColor);
-    border-radius: var(--global-borderRadius);
+    border-radius: var(--input-borderRadius, var(--global-borderRadius));
+    border: var(--input-borderWidth, var(--global-borderWidth)) solid var(--input-borderColor, var(--global-input-borderColor));
+    background-color: var(--input-backgroundColor, var(--global-input-backgroundColor));
     color: var(--global-input-color);
-    background-color: var(--global-input-backgroundColor);
     font-family: inherit;
     font-size: 16px;
     line-height: calc(var(--global-baseline) * 3);
     padding: calc(var(--global-baseline) * 1.5 - var(--global-borderWidth)) var(--global-whitespace-md);
     outline: none;
-    transition: border var(--global-transition-timing-alpha);
+    transition: var(--input-transition);
 }
 
 .c-input:hover {
-    border-color: var(--global-color-neutral-xx-light);
+    border-color:  var(--global-input-hover-borderColor);
 }
 
 .c-input:focus,
 .c-input:active {
-    border-color: var(--global-color-alpha);
-    box-shadow: 0 0 0 3px var(--global-color-alpha-x-transparent);
+    border-color: var(--global-input-focus-borderColor);
+    box-shadow: var(--global-input-boxShadow);
 }
 
 /* option input for checkboxes and radio buttons */
@@ -634,6 +674,28 @@ input::placeholder {
     margin-right: var(--global-whitespace-sm);
 }
 
+/*
+    Component: Option list
+*/
+.c-option-list {
+    margin-bottom: var(--global-whitespace);
+}
+.c-option-list__item {
+    margin-bottom: calc(var(--global-whitespace) / 2);
+}
+
+/*
+    Custom option
+    ---
+    Custom checkboxes & radio buttons
+*/
+
+.c-custom-option{
+    display: flex;
+    --custom-option-borderColor: var(--global-input-borderColor);
+    --custom-option-focus-borderColor: var(--global-input-focus-borderColor);
+    --custom-option-hover-borderColor: var(--global-input-hover-borderColor);
+}
 .c-custom-option__fake-input{
     --c-option__fake-input-size: calc(var(--global-baseline) * 2);
     display: flex;
@@ -641,31 +703,30 @@ input::placeholder {
     justify-content: center;
     width: var(--c-option__fake-input-size);
     height: var(--c-option__fake-input-size);
-    border: var(--global-borderWidth) solid var(--global-input-borderColor);
+    border: var(--global-borderWidth) solid var(--custom-option-borderColor);
     border-radius: var(--global-borderRadius);
     margin-right: var(--global-baseline);
 }
 
 .c-custom-option__symbol{
-    display: none;
+    /* display: none; */
     opacity: 0;
-}
-.c-custom-option{
-    display: flex;
+    transform: scale(.5);
+    transition: .1s ease-in-out;
+    transition-property: opacity, transform;
 }
 .c-option--hidden:checked + .c-custom-option{
     
 }
 
 .c-option--hidden:checked + .c-custom-option .c-custom-option__symbol {
-    display: block;
-    opacity: 1;
-    transition: all 500ms cubic-bezier(0.250, 0.250, 0.750, 0.750);
-    
+    /* display: block; */
+    opacity: 1;  
+    transform: scale(1);  
 }
 
 .c-custom-option__fake-input--checkbox{
-    /* border-radius: var(--global-borderRadius); */
+    border-radius: var(--global-borderRadius);
 }
 
 .c-custom-option__fake-input--radio{
@@ -681,11 +742,157 @@ input::placeholder {
 .c-custom-option__fake-input--radio .c-custom-option__symbol {
     height: 6px;
     width: 6px;
-    
     border-radius: 100%;
     background-color: var(--global-color-alpha);
     
 }
+
+/* hover state */
+
+.c-custom-option:hover {
+    --custom-option-borderColor: var(--custom-option-hover-borderColor);
+}
+
+/* focused and active state */
+
+.c-option--hidden:focus-visible + .c-custom-option .c-custom-option__fake-input{
+    border-color: var(--global-input-focus-borderColor);
+    box-shadow: var(--global-input-boxShadow);
+}
+
+/*
+    Component: Custom Toggle
+    ---
+    Visually change a checkbox into a toggle
+*/
+
+.c-custom-toggle-list {
+    --toggle-list-borderColor: var(--global-color-neutral-xxx-light);
+    margin-bottom: 24px;
+}
+
+.c-custom-toggle-list__item {
+    margin-bottom: 12px;
+}
+
+.c-custom-toggle-list__item + .c-custom-toggle-list__item {
+    padding-top: 12px;
+    border-top: 1px solid var(--toggle-list-borderColor);
+}
+
+.c-custom-toggle {
+    --toggle-backgroundColor: var(--global-color-neutral-xxxx-light);
+    --toggle-borderColor: var(--global-input-borderColor);
+    --toggle-focus-borderColor: var(--global-input-focus-borderColor);
+    --toggle-checked-borderColor: var(--global-color-alpha-dark);
+    --toggle-checked-backgroundColor: var(--global-color-alpha);
+    --toggle-focus-boxShadow: var(--global-input-focus-boxShadowSpread) var(--global-input-focus-boxShadowColor);
+    --toggle-transition: all var(--global-transitionDuration-alpha) var(--global-transitionEasing-out);
+    --toggle__switch-backgroundColor: White;
+    --toggle__switch-checked-backgroundColor: White;
+    --toggle__switch-transition: all var(--global-transitionDuration-alpha) var(--global-transitionEasing-out);
+    display: flex;
+    align-items: center;
+}
+
+.c-custom-toggle--inverted {
+    flex-direction: row-reverse;
+    justify-content: space-between;
+}
+
+.c-custom-toggle__fake-input {
+    display: block;
+    height: 24px;
+    width: 48px;
+    margin-right: 16px;
+    background-color: var(--toggle-backgroundColor);
+    border-radius: 32px;
+    border: 1px solid var(--toggle-borderColor);
+    transition: var(--toggle-transition);
+    box-shadow: var(--toggle-boxShadow, 0);
+}
+
+.c-custom-toggle--inverted .c-custom-toggle__fake-input {
+    margin-right: 0;
+}
+
+.c-custom-toggle__fake-input::after {
+    position: relative;
+    display: block;
+    content: '';
+    height: 22px;
+    width: 22px;
+    border-radius: 22px;
+    box-shadow: 0 1px 3px 1px rgba(0,0,0,.2);
+    background-color: var(--toggle__switch-backgroundColor);
+    transition: var(--toggle__switch-transition);
+}
+
+/* focused and active state */
+
+.c-option--hidden:focus + .c-custom-toggle,
+.c-option--hidden:active + .c-custom-toggle {
+    --toggle-borderColor: var(--toggle-focus-borderColor);
+    --toggle-boxShadow: var(--toggle-focus-boxShadow);
+}
+
+/* checked state */
+
+.c-option--hidden:checked + .c-custom-toggle {
+    --toggle-backgroundColor: var(--toggle-checked-backgroundColor);
+    --toggle-borderColor: var(--toggle-checked-borderColor);
+    --toggle__switch-backgroundColor: var(--toggle__switch-checked-backgroundColor);
+}
+
+.c-option--hidden:checked + .c-custom-toggle .c-custom-toggle__fake-input::after {
+    transform: translate(24px,0);
+}
+
+/* special active state */
+
+.c-option--hidden:active + .c-custom-toggle .c-custom-toggle__fake-input::after {
+    width: 28px;
+}
+
+.c-option--hidden:active:checked + .c-custom-toggle .c-custom-toggle__fake-input::after {
+    margin-left: -6px;
+}
+
+@media (prefers-color-scheme: dark) {
+    .c-custom-toggle-list {
+        --toggle-list-borderColor: var(--global-color-neutral-xx-dark);
+    }
+
+    .c-custom-toggle {
+        --toggle-backgroundColor: var(--global-input-backgroundColor);
+        --toggle-checked-borderColor: var(--toggle-checked-backgroundColor);
+        --toggle__switch-backgroundColor: var(--global-color-neutral-dark);
+        --toggle__switch-checked-backgroundColor: White; 
+        --toggle-focus-boxShadow: var(--global-color-neutral-xxxx-dark), var(--global-input-focus-boxShadow);        
+    }
+}
+/*
+    Component: Custom Select
+    ---
+    Custom select dropdown
+*/
+
+
+.c-custom-select {
+    display: block;
+    position: relative;
+}
+
+.c-custom-select__symbol {
+    width: var(--global-whitespace);
+    height: var(--global-whitespace);
+    position: absolute;
+    top: calc(var(--global-whitespace) / 2);
+    right: calc(var(--global-whitespace) / 2);
+    pointer-events: none;
+    fill: var(--global-color-neutral-x-light);
+}
+
 /*
     Component: Label
     ---
@@ -695,15 +902,20 @@ input::placeholder {
 .c-label {
     margin-bottom: 0;
     font-size: 14px;
-    padding-bottom: var(--global-whitespace-xs);    
+    padding-bottom: var(--global-whitespace-sm);    
     line-height: calc(var(--global-baseline) * 2);
-    color: var(--global-color-neutral-xx-dark);
+    color: var(--label-color, var(--global-label-color));
 }
 
 .c-label--option {
     padding-bottom: 0;
 }
 
+@media (prefers-color-scheme: dark) {
+    .c-label {      
+        --label-color: var(--global-color-neutral-xx-light);    
+    }
+}
 /*
     Component: Button
     ---
@@ -712,29 +924,43 @@ input::placeholder {
 
 .c-button {
     font-size: 16px;
-    font-weight: 700;
-    border-radius: var(--global-borderRadius);
-    border: var(--global-borderWidth) solid var(--global-color-alpha-dark);
-    background-color: var(--global-color-alpha);
+    font-weight: 600;
+    border-radius: var(--button-borderRadius, var(--global-borderRadius));
+    border: var(--button-borderWidth, var(--global-borderWidth)) solid var(--button-borderColor, var(--global-color-alpha-dark));
+    background-color: var(--button-backgroundColor, var(--global-color-alpha));
     color: #fff;
-    padding: calc(var(--global-baseline) * 1.5 - var(--global-borderWidth)) var(--global-whitespace-md);
+    padding: calc(var(--global-baseline) * 1.5 - var(--button-borderWidth, var(--global-borderWidth))) var(--global-whitespace-md);
     line-height: calc(var(--global-baseline) * 3);
     width: 100%;
     outline: none;
-    transition: all var(--global-transition-timing-alpha);
+    box-shadow: var(--button-boxShadow, 0);
+    transition: all var(--global-transitionDuration-alpha) var(--global-transitionEasing-out);
 }
 
 .c-button:hover {
-    background-color: var(--global-color-alpha-light);
+    border-color: var(--button-hover-borderColor, var(--global-color-alpha-dark));
+    background-color: var(--button-hover-backgroundColor, var(--global-color-alpha-light));
 }
 
 .c-button:focus {
-    box-shadow: 0 0 0 3px var(--global-color-alpha-x-transparent);
+    background-color: var(--button-focus-backgroundColor, var(--global-color-alpha));
+    border-color: var(--button-focus-borderColor, var(--global-color-alpha-dark));
+    box-shadow: var(--global-input-focus-boxShadowSpread) var(--button-focus-boxShadowColor, var(--global-input-focus-boxShadowColor));
 }
 
 .c-button:active {
-    background-color: var(--global-color-alpha-dark);
-    box-shadow: none;
+    background-color: var(--button-active-backgroundColor, var(--global-color-alpha-dark));
+    border-color: var(--button-active-borderColor, var(--global-color-alpha-dark));
+    box-shadow: var(--button-active-boxShadow, 0);
+}
+
+@media (prefers-color-scheme: dark) {
+    .c-button {
+        --button-borderColor: var(--global-color-alpha);
+        --button-hover-borderColor: var(--global-color-alpha-light);
+        --button-active-borderColor: var(--global-color-alpha-dark);
+        --button-focus-borderColor: var(--global-color-alpha-x-dark);
+    }
 }
 
 
